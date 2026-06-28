@@ -136,11 +136,11 @@ const EditorInner = ({
         // Fetch a fresh token for the next reconnect attempt
         const newToken = await getToken();
         if (newToken && mounted) {
-          const wsUrl = process.env.NEXT_PUBLIC_WS_URL || "ws://localhost:1234";
-          const url = new URL(wsUrl);
-          url.searchParams.set("token", newToken);
-          url.searchParams.set("room", documentId);
-          (provider as any).url = url.toString();
+          (provider as any).params = {
+            ...((provider as any).params || {}),
+            token: newToken,
+            room: documentId,
+          };
         }
       }
     };

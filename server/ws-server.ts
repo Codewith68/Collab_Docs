@@ -18,6 +18,7 @@
  * - Connection rate limiting per IP
  */
 
+import "dotenv/config";
 import http from "http";
 import { WebSocketServer, WebSocket } from "ws";
 import * as Y from "yjs";
