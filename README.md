@@ -160,7 +160,7 @@ All WebSocket connections require a valid Clerk JWT token passed as a URL parame
 Connection attempts are limited to 20 per IP per minute to prevent connection flooding.
 
 ### Viewer Enforcement
-VIEWERs are blocked from pushing state updates at the WebSocket protocol level. Sync update messages (type 2) from VIEWER connections are silently dropped.
+VIEWERs are blocked from pushing state updates at the WebSocket protocol level. Sync update messages (type 2) from VIEWER connections are silently droppedd.
 
 ## Deployment
 
