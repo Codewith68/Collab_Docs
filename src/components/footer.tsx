@@ -22,7 +22,7 @@ export function Footer() {
             GitHub
           </Link>
           <Link
-            href="https://linkedin.com/in/"
+            href="https://linkedin.com/in/subra"
             target="_blank"
             rel="noopener noreferrer"
             className="flex items-center gap-1.5 hover:text-foreground transition-colors"

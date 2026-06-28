@@ -9,6 +9,7 @@
     "build": "prisma generate && next build",
     "start": "next start",
     "lint": "next lint",
+    "test": "vitest run",
     "db:push": "prisma db push",
     "db:migrate": "prisma migrate dev",
     "db:studio": "prisma studio",
@@ -78,7 +79,7 @@
     "input-otp": "^1.4.2",
     "lib0": "^0.2.98",
     "lucide-react": "^0.461.0",
-    "next": "15.0.3",
+    "next": "^16.0.0",
     "next-themes": "^0.4.3",
     "nuqs": "^2.2.3",
     "react": "19.0.0-rc-66855b96-20241106",
@@ -90,6 +91,7 @@
     "react-resizable-panels": "^4.11.2",
     "recharts": "^3.9.0",
     "sonner": "^1.7.0",
+    "svix": "^1.96.1",
     "tailwind-merge": "^2.5.5",
     "tailwindcss-animate": "^1.0.7",
     "tiptap-extension-resize-image": "^1.2.1",
@@ -104,18 +106,24 @@
     "zustand": "^5.0.1"
   },
   "devDependencies": {
+    "@testing-library/dom": "^10.4.1",
+    "@testing-library/jest-dom": "^6.9.1",
+    "@testing-library/react": "^16.3.2",
     "@types/node": "^20",
     "@types/react": "^18",
     "@types/react-color": "^3.0.12",
     "@types/react-dom": "^18",
     "@types/ws": "^8.5.0",
+    "@vitejs/plugin-react": "^6.0.3",
     "concurrently": "^9.0.0",
     "eslint": "^8",
-    "eslint-config-next": "15.0.3",
+    "eslint-config-next": "^16.0.0",
+    "jsdom": "^29.1.1",
     "postcss": "^8",
     "prisma": "^6.0.0",
     "tailwindcss": "^3.4.1",
     "tsx": "^4.19.0",
-    "typescript": "^5"
+    "typescript": "^5",
+    "vitest": "^4.1.9"
   }
 }

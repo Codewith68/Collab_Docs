@@ -2,7 +2,8 @@
 
 A production-grade, local-first collaborative document editor with offline synchronization, deterministic conflict resolution (CRDTs), granular version control, and AI-powered writing assistance.
 
-<<<<<<< HEAD
+Built for the **House of Edtech — Fullstack Developer Assignment 2** (v2.1).
+
 ## Architecture
 
 ```
@@ -35,9 +36,6 @@ A production-grade, local-first collaborative document editor with offline synch
 │  └──────┘  └──────────┘  └─────────────┘  └──────────┘  │
 └─────────────────────────────────────────────────────────┘
 ```
-=======
-## Prerequisites
->>>>>>> fa27956b4a3f2e6aac47f2d72f68a1050d434a5b
 
 ## Key Features
 
@@ -51,19 +49,12 @@ A production-grade, local-first collaborative document editor with offline synch
 - Multiple users can edit the same document simultaneously without conflicts
 - No data loss — operations are commutative and idempotent
 
-<<<<<<< HEAD
 ### Custom WebSocket Server
 - Built from scratch using `ws` + `y-protocols`
 - Implements the full Yjs sync protocol (sync step 1/2 + incremental updates)
 - Awareness protocol for real-time cursor positions and presence
 - Debounced PostgreSQL persistence (2s)
 - Graceful shutdown with final document persistence
-=======
-   Using npm:
-   ```bash
-   npm install 
-   ```
->>>>>>> fa27956b4a3f2e6aac47f2d72f68a1050d434a5b
 
 ### Version History & Time Travel
 - Create named snapshots of document state
@@ -83,19 +74,19 @@ A production-grade, local-first collaborative document editor with offline synch
 - Custom AI prompts
 - Streaming responses for real-time UX
 
-<<<<<<< HEAD
 ### Security
 - Clerk JWT verification on all connections
 - Payload size limits (5MB max) to prevent OOM attacks
 - Connection rate limiting (20 connections/minute/IP)
 - Zod validation on all API inputs
 - Role-based access enforcement at every layer
+- Webhook signature verification for Clerk events
 
 ## Tech Stack
 
 | Layer | Technology |
 |-------|------------|
-| Frontend | Next.js 15, React 19, TypeScript |
+| Frontend | Next.js 16, React 19, TypeScript |
 | Editor | TipTap with Yjs collaboration extensions |
 | CRDT Engine | Yjs (y-indexeddb, y-websocket, y-protocols) |
 | Real-time | Custom WebSocket server (ws + y-protocols) |
@@ -104,6 +95,8 @@ A production-grade, local-first collaborative document editor with offline synch
 | AI | Google Gemini via Vercel AI SDK |
 | Styling | Tailwind CSS + shadcn/ui + Radix UI |
 | State | Zustand |
+| Testing | Vitest (unit) |
+| CI/CD | GitHub Actions |
 
 ## Getting Started
 
@@ -136,89 +129,56 @@ npm run dev
 
 Open [http://localhost:3000](http://localhost:3000)
 
+### Running Tests
+
+```bash
+npm test
+```
+
 ## Security Considerations
 
 ### OOM Prevention
-The WebSocket server enforces a **5MB max payload size** on all incoming messages. Oversized payloads are dropped with a warning log.
+The WebSocket server enforces a **5MB max payload size** on all incoming messages. Oversized payloads are dropped with a warning log. Zod validators enforce strict size limits on all API inputs (`MAX_SYNC_PAYLOAD_SIZE = 5MB`, `MAX_INITIAL_CONTENT_LENGTH = 500KB`).
 
-### Tenant Isolation
-PostgreSQL queries are scoped by `ownerId` and `DocumentCollaborator` records. Users can only access documents they own or have been explicitly invited to.
+### Tenant Isolation (Row-Level Security)
+PostgreSQL queries are scoped by `ownerId` and `DocumentCollaborator` records via Prisma ORM. Users can only access documents they own or have been explicitly invited to. The `checkAccess()` helper enforces role-based access on every server action, and the WebSocket server performs per-connection authorization before allowing any document access.
+
+This effectively implements **application-level RLS** through Prisma query scoping:
+- All `findMany` queries filter by `ownerId`, `collaborator.userId`, or `organizationId`
+- All mutation actions (update, delete, version create/restore) call `checkAccess()` with required role arrays
+- WebSocket connections are authorized per-document before sync begins
 
 ### Authentication
-All WebSocket connections require a valid Clerk JWT token passed as a URL parameter. Invalid or expired tokens result in immediate connection closure (code 4001).
+All WebSocket connections require a valid Clerk JWT token passed as a URL parameter. Invalid or expired tokens result in immediate connection closure (code 4001). API routes use Clerk middleware for session verification.
 
 ### Rate Limiting
 Connection attempts are limited to 20 per IP per minute to prevent connection flooding.
 
+### Viewer Enforcement
+VIEWERs are blocked from pushing state updates at the WebSocket protocol level. Sync update messages (type 2) from VIEWER connections are silently dropped.
+
 ## Deployment
 
-### Vercel (Frontend)
+### Frontend (Vercel)
 ```bash
 vercel deploy
 ```
 
-### WebSocket Server (Railway/Render)
+### WebSocket Server (Railway/Render/Fly.io)
 Deploy the `server/` directory as a separate Node.js service.
 
 Set environment variables:
 - `DATABASE_URL` — same PostgreSQL database
 - `CLERK_SECRET_KEY` — for JWT verification
 - `WS_PORT` — port to listen on
-=======
-   You need to run both commands simultaneously in different terminal windows:
 
-   Terminal 1 - Next.js server:
-   ```bash
-   npm run dev
-   # or
-   bun dev
-   ```
+### CI/CD
+GitHub Actions workflow runs on every push/PR:
+- Lint checking (`next lint`)
+- TypeScript type checking (`tsc --noEmit`)
+- Unit tests (`vitest run`)
+- Production build verification
 
-   Terminal 2 - Convex server:
-   ```bash
-   npx convex dev
-   # or
-   bunx convex dev
-   ```
+## License
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
-
-
-## Deployment on Vercel
-
-To deploy on Vercel, use the following commands:
-
-1. Replace the build command:
-   ```bash
-   npx convex deploy --cmd 'npm run build'
-   # or
-   bunx convex deploy --cmd 'bun build'
-   ```
-
-2. Ensure the install command is set to:
-   ```bash
-   npm install --legacy-peer-deps
-   ```
-
-## Environment Variables
-
-The following environment variables are required:
-
-- `CONVEX_DEPLOYMENT` & `NEXT_PUBLIC_CONVEX_URL`: Automatically generated by running:
-  ```bash
-  npx convex dev
-  # or
-  bunx convex dev
-  ```
-- `NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY`: Clerk public key
-- `CLERK_SECRET_KEY`: Clerk secret key
-- `LIVEBLOCKS_SECRET_KEY`: Liveblocks secret key
-
-## Tech Stack
-
-- Next.js 15
-- React 19
-- Convex
-- Clerk
-- Liveblocks
->>>>>>> fa27956b4a3f2e6aac47f2d72f68a1050d434a5b
+MIT
