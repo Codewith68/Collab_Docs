@@ -35,7 +35,7 @@ const MESSAGE_AWARENESS = 1;
 const MAX_PAYLOAD_SIZE = 5 * 1024 * 1024; // 5MB max message size
 const PERSIST_DEBOUNCE_MS = 2000;
 const CLEANUP_DELAY_MS = 30000;
-const PORT = parseInt(process.env.WS_PORT || "1234");
+const PORT = parseInt(process.env.PORT || process.env.WS_PORT || "1234");
 
 // ─── Database ────────────────────────────────────────────────────────
 const prisma = new PrismaClient();
